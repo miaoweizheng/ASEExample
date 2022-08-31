@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: PerlinSumNoise
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity
+    Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=18935\n2475.2;73.6;1216.4;577.4;1675.631;603.2224;1.890144;True;False\nNode;AmplifyShaderEditor.TextureCoordinatesNode;3;-587.2902,-25.44651;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.FunctionInput;4;-1062.308,68.2403;Inherit;False;Scale;1;0;False;1;0;FLOAT;10;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;5;-831.508,-11.75971;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.FunctionInput;6;-1062.539,-77.00156;Inherit;False;Tiling;2;1;False;1;0;FLOAT2;1,1;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.CustomExpressionNode;2;-309.5081,-154.9156;Inherit;False;   
+    //\u751F\u6210\u7B2C\u4E8C\u6B65\uFF1A\u6784\u5EFA\u6676\u683C$    float2 pi
+    = floor(p)@$    float2 pf = p - pi@$    float2 w = pf * pf * (3.0 - 2.0 * pf)@$$   
+    //\u751F\u6210\u7B2C\u4E09\u6B65\uFF1A\u4F7F\u7528\u7F13\u548C\u66F2\u7EBF$   
+    return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)), $                  
+    dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x), $              
+    lerp(dot(hash22(pi + float2(0.0, 1.0)), pf - float2(0.0, 1.0)), $                  
+    dot(hash22(pi + float2(1.0, 1.0)), pf - float2(1.0, 1.0)), w.x),$              
+    w.y)@;1;Create;1;True;p;FLOAT2;0,0;In;;Inherit;False;perlin_noise;False;False;1;1;;False;1;0;FLOAT2;0,0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.CustomExpressionNode;1;-313.3841,-305.6671;Inherit;False;   
+    p = float2( dot(p,float2(127.1,311.7)),$              dot(p,float2(269.5,183.3)))@$$   
+    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123)@;2;Create;1;False;p;FLOAT2;0,0;In;;Inherit;False;hash22;False;False;0;;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.CustomExpressionNode;7;-293.865,-9.520311;Inherit;False;   
+    float f = 0.0@$    p = p * 4.0@$    f += 1.0000 * perlin_noise(p)@ p = 2.0 *
+    p@$    f += 0.5000 * perlin_noise(p)@ p = 2.0 * p@$\tf += 0.2500 * perlin_noise(p)@
+    p = 2.0 * p@$\tf += 0.1250 * perlin_noise(p)@ p = 2.0 * p@$\tf += 0.0625 * perlin_noise(p)@
+    p = 2.0 * p@$    $    return f@;1;Create;1;True;p;FLOAT2;0,0;In;;Inherit;False;perlin_sum;True;False;1;2;;False;1;0;FLOAT2;0,0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;0,0;Inherit;False;True;-1;Output;0;False;1;0;FLOAT;0;False;1;FLOAT;0\nWireConnection;3;0;5;0\nWireConnection;5;0;6;0\nWireConnection;5;1;4;0\nWireConnection;7;0;3;0\nWireConnection;0;0;7;0\nASEEND*/\n//CHKSM=DDFED50527491FCC6AADAD18050467D1983BD8A0"
+  m_functionName: 
+  m_description: 
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_additionalDirectives:
+    m_validData: 0
+    m_isDirty: 0
+    m_moduleName: ' Additional Directives'
+    m_independentModule: 1
+    m_customEdited: 0
+    m_additionalDirectives: []
+    m_shaderFunctionDirectives: []
+    m_nativeDirectives: []
+    m_nativeDirectivesIndex: -1
+    m_nativeDirectivesFoldout: 0
+    m_directivesSaveItems: []
+  m_nodeCategory: 3
+  m_customNodeCategory: 
+  m_previewPosition: 0
+  m_hidden: 0
+  m_url: 
