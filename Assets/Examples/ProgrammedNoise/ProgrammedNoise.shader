@@ -6,6 +6,7 @@ Shader "Custom/ProgrammedNoise"
 	{
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
+		[ASEEnd][ASEBegin]_Scale("Scale", Float) = 0
 
 		[HideInInspector]_QueueOffset("_QueueOffset", Float) = 0
         [HideInInspector]_QueueControl("_QueueControl", Float) = -1
@@ -249,7 +250,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -271,25 +273,14 @@ Shader "Custom/ProgrammedNoise"
 			CBUFFER_END
 			
 
-			float2 hash22( float2 p )
+			float MyCustomExpression8_g20( float2 uv, float scale, float Magic )
 			{
-				    p = float2( dot(p,float2(127.1,311.7)),
-				              dot(p,float2(269.5,183.3)));
-				    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
-			}
-			
-			float perlin_noise6_g12( float2 p )
-			{
-				    //生成第二步：构建晶格
-				    float2 pi = floor(p);
-				    float2 pf = p - pi;
-				    float2 w = pf * pf * (3.0 - 2.0 * pf);
-				    //生成第三步：使用缓和曲线
-				    return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)), 
-				                   dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x), 
-				               lerp(dot(hash22(pi + float2(0.0, 1.0)), pf - float2(0.0, 1.0)), 
-				                   dot(hash22(pi + float2(1.0, 1.0)), pf - float2(1.0, 1.0)), w.x),
-				               w.y);
+				        uv = floor(uv * scale);
+				        float2 PixelPos = uv * 512;
+					float2 Random2 = ( 1.0 / 4320.0 ) * PixelPos + float2( 0.25, 0.0 );
+					float Random = frac( dot( Random2 * Random2, Magic ) );
+					Random = frac( Random * Random * (2 * Magic) );
+					return Random;
 			}
 			
 
@@ -501,12 +492,14 @@ Shader "Custom/ProgrammedNoise"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float2 p6_g12 = float2( 10,10 );
-				float localperlin_noise6_g12 = perlin_noise6_g12( p6_g12 );
-				float2 temp_cast_0 = (localperlin_noise6_g12).xx;
-				float2 texCoord10_g12 = IN.ase_texcoord8.xy * temp_cast_0 + float2( 0,0 );
+				float2 texCoord5_g20 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 uv8_g20 = texCoord5_g20;
+				float scale8_g20 = _Scale;
+				float Magic8_g20 = 3571.0;
+				float localMyCustomExpression8_g20 = MyCustomExpression8_g20( uv8_g20 , scale8_g20 , Magic8_g20 );
+				float3 temp_cast_0 = (localMyCustomExpression8_g20).xxx;
 				
-				float3 Albedo = float3( texCoord10_g12 ,  0.0 );
+				float3 Albedo = temp_cast_0;
 				float3 Normal = float3(0, 0, 1);
 				float3 Emission = 0;
 				float3 Specular = 0.5;
@@ -775,7 +768,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -1050,7 +1044,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -1307,7 +1302,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -1329,25 +1325,14 @@ Shader "Custom/ProgrammedNoise"
 			CBUFFER_END
 			
 
-			float2 hash22( float2 p )
+			float MyCustomExpression8_g20( float2 uv, float scale, float Magic )
 			{
-				    p = float2( dot(p,float2(127.1,311.7)),
-				              dot(p,float2(269.5,183.3)));
-				    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
-			}
-			
-			float perlin_noise6_g12( float2 p )
-			{
-				    //生成第二步：构建晶格
-				    float2 pi = floor(p);
-				    float2 pf = p - pi;
-				    float2 w = pf * pf * (3.0 - 2.0 * pf);
-				    //生成第三步：使用缓和曲线
-				    return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)), 
-				                   dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x), 
-				               lerp(dot(hash22(pi + float2(0.0, 1.0)), pf - float2(0.0, 1.0)), 
-				                   dot(hash22(pi + float2(1.0, 1.0)), pf - float2(1.0, 1.0)), w.x),
-				               w.y);
+				        uv = floor(uv * scale);
+				        float2 PixelPos = uv * 512;
+					float2 Random2 = ( 1.0 / 4320.0 ) * PixelPos + float2( 0.25, 0.0 );
+					float Random = frac( dot( Random2 * Random2, Magic ) );
+					Random = frac( Random * Random * (2 * Magic) );
+					return Random;
 			}
 			
 
@@ -1507,13 +1492,15 @@ Shader "Custom/ProgrammedNoise"
 					#endif
 				#endif
 
-				float2 p6_g12 = float2( 10,10 );
-				float localperlin_noise6_g12 = perlin_noise6_g12( p6_g12 );
-				float2 temp_cast_0 = (localperlin_noise6_g12).xx;
-				float2 texCoord10_g12 = IN.ase_texcoord4.xy * temp_cast_0 + float2( 0,0 );
+				float2 texCoord5_g20 = IN.ase_texcoord4.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 uv8_g20 = texCoord5_g20;
+				float scale8_g20 = _Scale;
+				float Magic8_g20 = 3571.0;
+				float localMyCustomExpression8_g20 = MyCustomExpression8_g20( uv8_g20 , scale8_g20 , Magic8_g20 );
+				float3 temp_cast_0 = (localMyCustomExpression8_g20).xxx;
 				
 				
-				float3 Albedo = float3( texCoord10_g12 ,  0.0 );
+				float3 Albedo = temp_cast_0;
 				float3 Emission = 0;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
@@ -1593,7 +1580,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -1615,25 +1603,14 @@ Shader "Custom/ProgrammedNoise"
 			CBUFFER_END
 			
 
-			float2 hash22( float2 p )
+			float MyCustomExpression8_g20( float2 uv, float scale, float Magic )
 			{
-				    p = float2( dot(p,float2(127.1,311.7)),
-				              dot(p,float2(269.5,183.3)));
-				    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
-			}
-			
-			float perlin_noise6_g12( float2 p )
-			{
-				    //生成第二步：构建晶格
-				    float2 pi = floor(p);
-				    float2 pf = p - pi;
-				    float2 w = pf * pf * (3.0 - 2.0 * pf);
-				    //生成第三步：使用缓和曲线
-				    return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)), 
-				                   dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x), 
-				               lerp(dot(hash22(pi + float2(0.0, 1.0)), pf - float2(0.0, 1.0)), 
-				                   dot(hash22(pi + float2(1.0, 1.0)), pf - float2(1.0, 1.0)), w.x),
-				               w.y);
+				        uv = floor(uv * scale);
+				        float2 PixelPos = uv * 512;
+					float2 Random2 = ( 1.0 / 4320.0 ) * PixelPos + float2( 0.25, 0.0 );
+					float Random = frac( dot( Random2 * Random2, Magic ) );
+					Random = frac( Random * Random * (2 * Magic) );
+					return Random;
 			}
 			
 
@@ -1779,13 +1756,15 @@ Shader "Custom/ProgrammedNoise"
 					#endif
 				#endif
 
-				float2 p6_g12 = float2( 10,10 );
-				float localperlin_noise6_g12 = perlin_noise6_g12( p6_g12 );
-				float2 temp_cast_0 = (localperlin_noise6_g12).xx;
-				float2 texCoord10_g12 = IN.ase_texcoord2.xy * temp_cast_0 + float2( 0,0 );
+				float2 texCoord5_g20 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 uv8_g20 = texCoord5_g20;
+				float scale8_g20 = _Scale;
+				float Magic8_g20 = 3571.0;
+				float localMyCustomExpression8_g20 = MyCustomExpression8_g20( uv8_g20 , scale8_g20 , Magic8_g20 );
+				float3 temp_cast_0 = (localMyCustomExpression8_g20).xxx;
 				
 				
-				float3 Albedo = float3( texCoord10_g12 ,  0.0 );
+				float3 Albedo = temp_cast_0;
 				float Alpha = 1;
 				float AlphaClipThreshold = 0.5;
 
@@ -1860,7 +1839,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -2176,7 +2156,8 @@ Shader "Custom/ProgrammedNoise"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef _TRANSMISSION_ASE
+			float _Scale;
+			#ifdef _TRANSMISSION_ASE
 				float _TransmissionShadow;
 			#endif
 			#ifdef _TRANSLUCENCY_ASE
@@ -2198,25 +2179,14 @@ Shader "Custom/ProgrammedNoise"
 			CBUFFER_END
 			
 
-			float2 hash22( float2 p )
+			float MyCustomExpression8_g20( float2 uv, float scale, float Magic )
 			{
-				    p = float2( dot(p,float2(127.1,311.7)),
-				              dot(p,float2(269.5,183.3)));
-				    return -1.0 + 2.0 * frac(sin(p) * 43758.5453123);
-			}
-			
-			float perlin_noise6_g12( float2 p )
-			{
-				    //生成第二步：构建晶格
-				    float2 pi = floor(p);
-				    float2 pf = p - pi;
-				    float2 w = pf * pf * (3.0 - 2.0 * pf);
-				    //生成第三步：使用缓和曲线
-				    return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)), 
-				                   dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x), 
-				               lerp(dot(hash22(pi + float2(0.0, 1.0)), pf - float2(0.0, 1.0)), 
-				                   dot(hash22(pi + float2(1.0, 1.0)), pf - float2(1.0, 1.0)), w.x),
-				               w.y);
+				        uv = floor(uv * scale);
+				        float2 PixelPos = uv * 512;
+					float2 Random2 = ( 1.0 / 4320.0 ) * PixelPos + float2( 0.25, 0.0 );
+					float Random = frac( dot( Random2 * Random2, Magic ) );
+					Random = frac( Random * Random * (2 * Magic) );
+					return Random;
 			}
 			
 
@@ -2426,12 +2396,14 @@ Shader "Custom/ProgrammedNoise"
 	
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float2 p6_g12 = float2( 10,10 );
-				float localperlin_noise6_g12 = perlin_noise6_g12( p6_g12 );
-				float2 temp_cast_0 = (localperlin_noise6_g12).xx;
-				float2 texCoord10_g12 = IN.ase_texcoord8.xy * temp_cast_0 + float2( 0,0 );
+				float2 texCoord5_g20 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 uv8_g20 = texCoord5_g20;
+				float scale8_g20 = _Scale;
+				float Magic8_g20 = 3571.0;
+				float localMyCustomExpression8_g20 = MyCustomExpression8_g20( uv8_g20 , scale8_g20 , Magic8_g20 );
+				float3 temp_cast_0 = (localMyCustomExpression8_g20).xxx;
 				
-				float3 Albedo = float3( texCoord10_g12 ,  0.0 );
+				float3 Albedo = temp_cast_0;
 				float3 Normal = float3(0, 0, 1);
 				float3 Emission = 0;
 				float3 Specular = 0.5;
@@ -2612,7 +2584,8 @@ Shader "Custom/ProgrammedNoise"
 			};
         
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef TESSELLATION_ON
+			float _Scale;
+			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2819,7 +2792,8 @@ Shader "Custom/ProgrammedNoise"
 			};
         
 			CBUFFER_START(UnityPerMaterial)
-						#ifdef TESSELLATION_ON
+			float _Scale;
+			#ifdef TESSELLATION_ON
 				float _TessPhongStrength;
 				float _TessValue;
 				float _TessMin;
@@ -2984,8 +2958,9 @@ Shader "Custom/ProgrammedNoise"
 /*ASEBEGIN
 Version=18935
 2242.4;73.6;1414;559.8;1140.624;272.5124;1.3;True;False
-Node;AmplifyShaderEditor.FunctionNode;18;-381.7301,102.6423;Inherit;False;WhiteNoise;-1;;8;7e427d7a77746594188935f846b57386;0;1;7;FLOAT2;1,1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.FunctionNode;22;-379.8644,-164.8724;Inherit;False;PerlinNoise;-1;;12;3dfcdcfb60da9844885a247fa66bc50b;0;1;7;FLOAT2;10,10;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.FunctionNode;30;-444.8639,-93.37231;Inherit;False;WhiteNoise;-1;;20;7e427d7a77746594188935f846b57386;0;2;10;FLOAT;10;False;7;FLOAT2;1,1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;31;-728.2639,-88.17257;Inherit;False;Property;_Scale;Scale;0;0;Create;True;0;0;0;False;0;False;0;100;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;25;-439.6649,162.7277;Inherit;False;PerlinNoise;-1;;15;3dfcdcfb60da9844885a247fa66bc50b;0;1;7;FLOAT2;10,10;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;0;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;True;3;False;-1;False;True;1;LightMode=ShadowCaster;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;3;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;False;False;True;False;False;False;False;0;False;-1;False;False;False;False;False;False;False;False;False;True;1;False;-1;False;False;True;1;LightMode=DepthOnly;False;False;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
@@ -2996,6 +2971,7 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;7;0,0;Float;False;False;-1;
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;8;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;2;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;9;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;1;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;True;4;d3d11;glcore;gles;gles3;0;Hidden/InternalErrorShader;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;1.3,0;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;2;Custom/ProgrammedNoise;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;19;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;-1;False;True;0;False;-1;False;False;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;3;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;True;2;True;17;d3d9;d3d11;glcore;gles;gles3;metal;vulkan;xbox360;xboxone;xboxseries;ps4;playstation;psp2;n3ds;wiiu;switch;nomrt;0;False;True;1;1;False;-1;0;False;-1;1;1;False;-1;0;False;-1;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;-1;False;False;False;False;False;False;False;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;False;False;False;False;True;1;LightMode=UniversalForward;False;False;0;Hidden/InternalErrorShader;0;0;Standard;40;Workflow;1;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,-1;0;Translucency;0;0;  Translucency Strength;1,False,-1;0;  Normal Distortion;0.5,False,-1;0;  Scattering;2,False,-1;0;  Direct;0.9,False,-1;0;  Ambient;0.1,False,-1;0;  Shadow;0.5,False,-1;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;1;0;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;DOTS Instancing;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,-1;0;  Type;0;0;  Tess;16,False,-1;0;  Min;10,False,-1;0;  Max;25,False,-1;0;  Edge Length;16,False,-1;0;  Max Displacement;25,False,-1;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
-WireConnection;1;0;22;0
+WireConnection;30;10;31;0
+WireConnection;1;0;30;0
 ASEEND*/
-//CHKSM=A8A5236678079C98BEF2EA9CCE549A0A08F2AA94
+//CHKSM=4A03255AC12CE21B1BE7247D48FD5AF2817F01FA

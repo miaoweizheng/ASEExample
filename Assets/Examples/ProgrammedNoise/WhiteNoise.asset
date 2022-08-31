@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: WhiteNoise
   m_EditorClassIdentifier: 
   m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity
-    Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=18935\n2242.4;73.6;1414;559.8;1422.742;391.3835;1.375502;True;False\nNode;AmplifyShaderEditor.TextureCoordinatesNode;5;-598.5577,-58.89867;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.FunctionInput;7;-918.7064,-34.78796;Inherit;False;Tiling;2;0;False;1;0;FLOAT2;1,1;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.NoiseGeneratorNode;3;-332.5577,-42.89868;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;10;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;0,0;Inherit;False;True;-1;Output;0;True;1;0;FLOAT;0;False;1;FLOAT;0\nWireConnection;5;0;7;0\nWireConnection;3;0;5;0\nWireConnection;0;0;3;0\nASEEND*/\n//CHKSM=D52B9A656A177654AD74EFFDD479E0610F5D458E"
+    Asset Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=18935\n2242.4;73.6;1414;559.8;1422.742;391.3835;1.375502;True;False\nNode;AmplifyShaderEditor.TextureCoordinatesNode;5;-547.6647,-50.64566;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.CustomExpressionNode;8;-245.0372,76.01208;Inherit;False;       
+    uv = floor(uv * scale)@$        float2 PixelPos = uv * 512@$\tfloat2 Random2
+    = ( 1.0 / 4320.0 ) * PixelPos + float2( 0.25, 0.0 )@$\tfloat Random = frac( dot(
+    Random2 * Random2, Magic ) )@$\tRandom = frac( Random * Random * (2 * Magic)
+    )@$\treturn Random@;1;Create;3;False;uv;FLOAT2;0,0;In;;Inherit;False;False;scale;FLOAT;0;In;;Inherit;False;False;Magic;FLOAT;3571;In;;Inherit;False;My
+    Custom Expression;True;False;0;;False;3;0;FLOAT2;0,0;False;1;FLOAT;0;False;2;FLOAT;3571;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;7;-770.1525,-44.4165;Inherit;False;Tiling;2;1;False;1;0;FLOAT2;1,1;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.FunctionInput;10;-774.6051,100.7711;Inherit;False;Scale;1;0;False;1;0;FLOAT;10;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;56.39558,77.02811;Inherit;False;True;-1;Output;0;True;1;0;FLOAT;0;False;1;FLOAT;0\nWireConnection;5;0;7;0\nWireConnection;8;0;5;0\nWireConnection;8;1;10;0\nWireConnection;0;0;8;0\nASEEND*/\n//CHKSM=2955DB4F7BA853A4E07822955D66D0C53E22C242"
   m_functionName: 
   m_description: 
   m_additionalIncludes:
